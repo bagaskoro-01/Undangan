@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Undangan Pernikahan Ultimate</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#0a0a0a,#1a0f12,#2b0f14);
+  color:#fff;overflow-x:hidden}
+section{min-height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center;padding:40px;opacity:0;transform:translateY(50px);transition:1s}
+section.active{opacity:1;transform:translateY(0)}
+h1{font-family:'Playfair Display';color:#b3003c}
+.btn{padding:12px 30px;border:none;border-radius:30px;background:#800020;color:#fff;margin-top:20px;cursor:pointer}/* BACKGROUND ANIMASI */ .bg{position:fixed;width:100%;height:100%;overflow:hidden;z-index:-1} .star{position:absolute;width:2px;height:2px;background:white;animation:twinkle 2s infinite alternate} @keyframes twinkle{from{opacity:0.2}to{opacity:1}}
+
+/* BULAN */ .moon{position:absolute;top:50px;right:50px;width:80px;height:80px;border-radius:50%;background:#fff;box-shadow:-20px 0 0 10px #0a0a0a}
+
+/* GALERI SLIDER */ .gallery{position:relative;width:300px;height:400px;overflow:hidden;border-radius:20px} .gallery img{position:absolute;width:100%;height:100%;object-fit:cover;opacity:0;transition:1s} .gallery img.active{opacity:1;transform:scale(1.05)}
+
+/* BUNGA JATUH */ .flower{position:fixed;top:-10px;width:10px;height:10px;background:#b3003c;border-radius:50%;opacity:0.7;animation:fall linear infinite} @keyframes fall{to{transform:translateY(100vh)}}
+
+.countdown{margin-top:10px} </style>
+
+</head>
+<body><div class="bg" id="bg"></div>
+<div class="moon"></div><audio id="music" loop>
+<source src="bahagia.mp3" type="audio/mp3">
+</audio><section class="active">
+<h1 id="guest">Kepada Tamu</h1>
+<p>Tanpa mengurangi rasa hormat, kami mengundang Anda</p>
+<button class="btn" onclick="start()">Buka Undangan</button>
+</section><section>
+<h1>Ahmad & Siti</h1>
+<p>QS. Ar-Rum:21</p>
+</section><section>
+<h1>13 Februari 2028</h1>
+<div id="countdown" class="countdown"></div>
+</section><section>
+<h1>Galeri</h1>
+<div class="gallery">
+<img src="foto1.jpg">
+<img src="foto2.jpg">
+<img src="foto3.jpg">
+<img src="foto4.jpg">
+</div>
+</section><section>
+<h1>RSVP</h1>
+<form onsubmit="kirim(event)">
+<input id="nama" placeholder="Nama" required><br>
+<textarea id="pesan" placeholder="Ucapan"></textarea><br>
+<button class="btn">Kirim</button>
+</form>
+</section><script>
+// START
+let current=0;const sec=document.querySelectorAll('section');const music=document.getElementById('music');
+function start(){music.volume=0;music.play();fadeMusic();next()}
+function next(){sec[current].classList.remove('active');current++;if(current<sec.length){sec[current].classList.add('active')}}
+
+// FADE MUSIC
+function fadeMusic(){let v=0;let i=setInterval(()=>{if(v<1){v+=0.05;music.volume=v}else clearInterval(i)},200)}
+
+// SCROLL
+window.addEventListener('scroll',()=>{sec.forEach(s=>{if(s.getBoundingClientRect().top<window.innerHeight-100){s.classList.add('active')}})})
+
+// COUNTDOWN
+let target=new Date("Feb 13, 2028 10:00:00").getTime();
+setInterval(()=>{let now=new Date().getTime();let d=target-now;let h=Math.floor(d/86400000);document.getElementById('countdown').innerHTML=h+" hari lagi"},1000);
+
+// RSVP WA
+function kirim(e){e.preventDefault();let n=nama.value;let p=pesan.value;window.open(`https://wa.me/6281234567890?text=Nama:${n}%0AUcapan:${p}`)}
+
+// SLIDER
+let slides=document.querySelectorAll('.gallery img');let i=0;setInterval(()=>{slides.forEach(s=>s.classList.remove('active'));slides[i].classList.add('active');i=(i+1)%slides.length},3000);
+
+// BINTANG
+for(let i=0;i<50;i++){let s=document.createElement('div');s.className='star';s.style.top=Math.random()*100+'%';s.style.left=Math.random()*100+'%';document.getElementById('bg').appendChild(s)}
+
+// BUNGA JATUH
+setInterval(()=>{let f=document.createElement('div');f.className='flower';f.style.left=Math.random()*100+'%';f.style.animationDuration=(3+Math.random()*5)+'s';document.body.appendChild(f);setTimeout(()=>f.remove(),8000)},300);
+
+// NAMA TAMU (URL ?to=nama)
+const url=new URLSearchParams(window.location.search);const to=url.get('to');if(to){document.getElementById('guest').innerText='Kepada '+to}
+</script></body>
+</html>
